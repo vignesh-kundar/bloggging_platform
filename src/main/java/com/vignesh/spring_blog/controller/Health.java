@@ -1,4 +1,4 @@
-package com.vignesh.spring_blog.Controller.Health;
+package com.vignesh.spring_blog.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
