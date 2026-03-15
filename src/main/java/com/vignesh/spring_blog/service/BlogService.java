@@ -6,6 +6,7 @@ import com.vignesh.spring_blog.entity.Blog;
 import com.vignesh.spring_blog.entity.Tag;
 import com.vignesh.spring_blog.repository.BlogRepository;
 import com.vignesh.spring_blog.repository.TagRepository;
+import com.vignesh.spring_blog.util.ResponseFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,27 +23,15 @@ public class BlogService {
     @Autowired
     private TagRepository tagRepository;
 
-    private BlogResponseDTO toResponse(Blog blog) {
-        return new BlogResponseDTO(
-                blog.getId(),
-                blog.getTitle(),
-                blog.getContent(),
-                blog.getCategory(),
-                blog.getTags().stream().map(Tag::getName).toList(),
-                blog.getCreatedAt(),
-                blog.getUpdatedAt()
-        );
-    }
-
     public List<BlogResponseDTO> findAllBlogs() {
         log.info("User requested for all Blogs!");
         List<Blog> blogs = blogRepository.findAll();
         log.debug("Blog List Fetched : {}" , blogs.stream().toList());
-        List<BlogResponseDTO> response = blogs.stream().map(this::toResponse).toList();
-        return response;
+        return blogs.stream().map(ResponseFormatter::toResponse).toList();
     }
 
     public Blog addBlog(BlogPostDTO blog) {
+        log.info("New Blog Entry received : {}" , blog.toString());
 
         List<Tag> tags = blog.tags().stream()
                 .map(tagName -> tagRepository.findByName(tagName)
