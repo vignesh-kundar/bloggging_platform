@@ -1,7 +1,10 @@
 package com.vignesh.spring_blog.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,7 +12,10 @@ import java.util.List;
 
 @Entity
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "blog")
+@Builder
 public class Blog {
 
     @Id
@@ -18,6 +24,7 @@ public class Blog {
 
     private String title;
     private String content;
+    private String category;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

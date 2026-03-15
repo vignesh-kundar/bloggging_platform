@@ -1,4 +1,4 @@
-package com.vignesh.spring_blog.controller.Health;
+package com.vignesh.spring_blog.controller;
 
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
