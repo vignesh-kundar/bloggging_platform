@@ -2,6 +2,8 @@
 
 A RESTful blogging platform built with Spring Boot.
 
+**Project Reference:** https://roadmap.sh/projects/blogging-platform-api
+
 ## Tech Stack
 
 - **Java** 21
