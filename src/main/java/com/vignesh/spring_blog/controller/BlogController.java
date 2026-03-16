@@ -4,6 +4,7 @@ import com.vignesh.spring_blog.dto.BlogPostDTO;
 import com.vignesh.spring_blog.dto.BlogResponseDTO;
 import com.vignesh.spring_blog.entity.Blog;
 import com.vignesh.spring_blog.service.BlogService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 
 @RestController
@@ -22,7 +24,11 @@ public class BlogController {
     private BlogService blogService;
 
     @GetMapping("/posts")
-    public ResponseEntity<List<BlogResponseDTO>> getAllBlogPosts() {
+    public ResponseEntity<List<BlogResponseDTO>> getAllBlogPosts(@RequestParam(required = false) String term) {
+        if (null!=term && !term.isBlank()) {
+            log.info("Request Param received : {}" , term);
+            return new ResponseEntity<>(blogService.filterByTerm(term) , HttpStatus.OK);
+        }
         return new ResponseEntity<>(blogService.findAllBlogs() , HttpStatus.OK);
     }
 
@@ -32,10 +38,15 @@ public class BlogController {
     }
 
     @PostMapping("/posts")
-    public ResponseEntity<Blog> addBlogPosts(@RequestBody @Validated BlogPostDTO blog) {
+    public ResponseEntity<Blog> addBlogPosts(@RequestBody @Valid BlogPostDTO blog) {
         Blog blogResponse = blogService.addBlog(blog);
         return new ResponseEntity<>(blogResponse , HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/posts/{post_id}")
+    public ResponseEntity<String> deleteBlogPostById(@PathVariable Long post_id) {
+        String response = blogService.deleteBlogPostById(post_id);
+        return new ResponseEntity<>(response , HttpStatus.OK);
+    }
 
 }

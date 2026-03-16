@@ -4,6 +4,7 @@ import com.vignesh.spring_blog.dto.ErrorResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -19,6 +20,13 @@ public class GlobalExceptionHandler {
         log.error("Error 404 : element Not Found");
         ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(HttpStatus.NOT_FOUND , ex.getMessage(),  LocalDateTime.now());
         return new ResponseEntity<>(errorResponseDTO , HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponseDTO> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        log.error("Validation Failed : {}" , ex.getMessage());
+        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(HttpStatus.BAD_REQUEST , ex.getMessage() , LocalDateTime.now());
+        return new ResponseEntity<>(errorResponseDTO , HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)

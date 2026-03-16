@@ -9,10 +9,12 @@ import com.vignesh.spring_blog.repository.TagRepository;
 import com.vignesh.spring_blog.util.ResponseFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -50,5 +52,18 @@ public class BlogService {
     public BlogResponseDTO findBlogPostById(Long postId) {
         Blog blog =  blogRepository.findById(postId).orElseThrow( () -> new NoSuchElementException("Blog Post with id " + postId + " was Not Found!"));
         return ResponseFormatter.toResponse(blog);
+    }
+
+    public String deleteBlogPostById(Long id) {
+        Blog blog = blogRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Blog Post with id " + id + " was Not Found!") );
+        blogRepository.deleteById(id);
+        return "BlogPost was deleted Successfully. id : " + id;
+    }
+
+    public List<BlogResponseDTO> filterByTerm(String termValue) {
+        log.info("filtering by term : {}" , termValue);
+        List<Blog> blogs = blogRepository.findAllByTerm(termValue);
+        return blogs.stream().map(ResponseFormatter::toResponse).toList();
     }
 }
