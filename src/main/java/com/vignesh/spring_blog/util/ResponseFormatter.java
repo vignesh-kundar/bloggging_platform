@@ -1,10 +1,9 @@
 package com.vignesh.spring_blog.util;
 
-import com.vignesh.spring_blog.DTO.BlogResponseDTO;
+import com.vignesh.spring_blog.dto.BlogResponseDTO;
 import com.vignesh.spring_blog.entity.Blog;
 import com.vignesh.spring_blog.entity.Tag;
 import lombok.experimental.UtilityClass;
-import org.springframework.context.annotation.Bean;
 
 @UtilityClass
 public class ResponseFormatter {
@@ -20,6 +19,5 @@ public class ResponseFormatter {
                 blog.getUpdatedAt()
         );
     }
-
 
 }

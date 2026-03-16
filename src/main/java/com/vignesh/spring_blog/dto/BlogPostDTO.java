@@ -1,7 +1,4 @@
-package com.vignesh.spring_blog.DTO;
-
-import com.vignesh.spring_blog.entity.Tag;
-import lombok.Data;
+package com.vignesh.spring_blog.dto;
 
 import java.util.List;
 
