@@ -33,12 +33,12 @@ public class BlogService {
         return blogs.stream().map(ResponseFormatter::toResponse).toList();
     }
 
-    public Blog addBlog(BlogPostDTO blog) {
+    public BlogResponseDTO addBlog(BlogPostDTO blog) {
         log.info("New Blog Entry received : {}" , blog.toString());
 
         List<Tag> tags = blog.tags().stream()
                 .map(tagName -> tagRepository.findByName(tagName)
-                        .orElse(tagRepository.save(Tag.builder().name(tagName).build()))).toList();
+                        .orElseGet(() -> tagRepository.save(Tag.builder().name(tagName).build()))).toList();
 
         Blog newBlog = Blog.builder()
                 .title(blog.title())
@@ -46,7 +46,7 @@ public class BlogService {
                 .content(blog.content())
                 .tags(tags).build();
 
-        return blogRepository.save(newBlog);
+        return ResponseFormatter.toResponse(blogRepository.save(newBlog));
     }
 
     public BlogResponseDTO findBlogPostById(Long postId) {

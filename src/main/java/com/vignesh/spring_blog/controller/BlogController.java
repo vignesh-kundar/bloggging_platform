@@ -38,8 +38,8 @@ public class BlogController {
     }
 
     @PostMapping("/posts")
-    public ResponseEntity<Blog> addBlogPosts(@RequestBody @Valid BlogPostDTO blog) {
-        Blog blogResponse = blogService.addBlog(blog);
+    public ResponseEntity<BlogResponseDTO> addBlogPosts(@RequestBody @Valid BlogPostDTO blog) {
+        BlogResponseDTO blogResponse = blogService.addBlog(blog);
         return new ResponseEntity<>(blogResponse , HttpStatus.CREATED);
     }
 
