@@ -14,9 +14,6 @@ public class corsConfiguration implements WebMvcConfigurer {
     @Value("${app.cors.allowed-methods}")
     private String allowedMethods;
 
-    @Value("${app.cors.allowed-headers}")
-    private String allowedHeaders;
-
     @Value("${app.cors.allow-credentials}")
     private boolean allowCredentials;
 
@@ -28,7 +25,7 @@ public class corsConfiguration implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(allowedOrigins.split(","))
                 .allowedMethods(allowedMethods.split(","))
-                .allowedHeaders(allowedHeaders.split(","))
+                .allowedHeaders("*")
                 .allowCredentials(allowCredentials)
                 .maxAge(maxAge);
     }
