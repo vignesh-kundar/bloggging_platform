@@ -1,14 +1,12 @@
 package com.vignesh.spring_blog.service;
 
-import com.vignesh.spring_blog.repository.UserAuthProviderRepository;
-import com.vignesh.spring_blog.repository.UsersRepository;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
@@ -17,22 +15,32 @@ import java.util.Date;
 public class JwtService {
 
     @Value("${app.jwt.secret}")
-    protected String JwtSecretKey;
+    protected String jwtSecretKey;
 
     @Value("${app.jwt.expiration}")
-    protected String JwtExpiration;
+    protected long jwtExpiration;
 
-    public String generateJwtToken( String email ) {
-        SecretKey key = Jwts.SIG.HS256.key().build();
-        // need to update expiry time :)
-        String jwt = Jwts.builder().subject(email).signWith(key).expiration(new Date(System.currentTimeMillis() + JwtExpiration)).compact();
-        return jwt;
+    public SecretKey generateSecretKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String extractEmail( String jwt ) throws Exception {
-        SecretKey key = Jwts.SIG.HS256.key().build();
-        String email = Jwts.parser().verifyWith(key).build().parseSignedClaims(jwt).getPayload().getSubject();
-        return email;
+    public String generateJwtToken( String email ) {
+        return Jwts.builder().
+                subject(email).
+                issuedAt(new Date(System.currentTimeMillis())).
+                expiration(new Date(System.currentTimeMillis() + jwtExpiration)).
+                signWith(generateSecretKey()).
+                compact();
+    }
+
+    public String extractEmail( String jwt ) {
+        return Jwts.parser().
+                verifyWith(generateSecretKey()).
+                build().
+                parseSignedClaims(jwt).
+                getPayload().
+                getSubject();
     }
 
     public boolean isTokenValid( String jwt ) {
@@ -41,7 +49,7 @@ public class JwtService {
            log.info("Extracted jwt token for : {}" , subject);
            return true;
        } catch (Exception ex) {
-           log.error("Failed to extract Jwt Token");
+           log.error("Failed to extract Jwt Token : {}" , ex.getMessage());
            return false;
        }
     }
