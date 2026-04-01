@@ -1,6 +1,7 @@
 package com.vignesh.spring_blog.exception;
 
 import com.vignesh.spring_blog.dto.ErrorResponseDTO;
+import jakarta.persistence.EntityExistsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.naming.directory.InvalidAttributesException;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
@@ -29,9 +31,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponseDTO , HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(InvalidAttributesException.class)
+    public ResponseEntity<ErrorResponseDTO> handleInvalidAttributesException(InvalidAttributesException ex) {
+        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(HttpStatus.UNAUTHORIZED , ex.getMessage() , LocalDateTime.now());
+        return new ResponseEntity<>(errorResponseDTO , HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(EntityExistsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleEntityExistsException(EntityExistsException ex) {
+        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(HttpStatus.CONFLICT , ex.getMessage() , LocalDateTime.now());
+        return new ResponseEntity<>(errorResponseDTO , HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handleException(Exception ex) {
-        log.error("Error occured : {}" , ex.getStackTrace());
+        log.error("Error occured : {}" , ex.getMessage());
         ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR , ex.getMessage() , LocalDateTime.now());
         return new ResponseEntity<>(errorResponseDTO , HttpStatus.INTERNAL_SERVER_ERROR);
     }

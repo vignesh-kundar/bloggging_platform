@@ -14,6 +14,4 @@ public class Health {
         return new ResponseEntity<>("Pong!!. Application is health." , HttpStatus.OK);
     }
 
-
-
 }

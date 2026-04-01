@@ -21,6 +21,7 @@ public class SecurityConfiguration {
                 .sessionManagement( session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.GET , "/ping").permitAll()
                         .requestMatchers(HttpMethod.GET , "/api/posts").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
