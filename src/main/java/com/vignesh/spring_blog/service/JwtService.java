@@ -20,7 +20,7 @@ public class JwtService {
     @Value("${app.jwt.expiration}")
     protected long jwtExpiration;
 
-    public SecretKey generateSecretKey() {
+    public SecretKey getSigninKey() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
@@ -30,13 +30,13 @@ public class JwtService {
                 subject(email).
                 issuedAt(new Date(System.currentTimeMillis())).
                 expiration(new Date(System.currentTimeMillis() + jwtExpiration)).
-                signWith(generateSecretKey()).
+                signWith(getSigninKey()).
                 compact();
     }
 
     public String extractEmail( String jwt ) {
         return Jwts.parser().
-                verifyWith(generateSecretKey()).
+                verifyWith(getSigninKey()).
                 build().
                 parseSignedClaims(jwt).
                 getPayload().

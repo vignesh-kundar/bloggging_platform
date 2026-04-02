@@ -8,10 +8,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Component
@@ -32,15 +36,27 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
 
-        String authToken = authHeader.substring(7);
-        if (!jwtService.isTokenValid(authToken)) {
+        String jwtToken = authHeader.substring(7);
+        if (!jwtService.isTokenValid(jwtToken)) {
             filterChain.doFilter(request , response);
             return;
         }
 
-        String email = jwtService.extractEmail(authToken);
-        Users user = usersRepository.findByEmail(email).orElseThrow( () -> new NoSuchElementException("No Usesr with email Id found!"));
+        String email = jwtService.extractEmail(jwtToken);
 
+        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            Users user = usersRepository.findByEmail(email).orElseThrow( () -> new NoSuchElementException("No Usesr with email Id found!"));
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+              user,
+              null,
+              List.of()
+            );
+            authToken.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request)
+            );
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+        }
+        filterChain.doFilter(request, response);
     }
 
 }
