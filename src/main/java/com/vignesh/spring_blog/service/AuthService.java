@@ -6,15 +6,10 @@ import com.vignesh.spring_blog.repository.UserAuthProviderRepository;
 import com.vignesh.spring_blog.repository.UsersRepository;
 import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-
 import javax.naming.directory.InvalidAttributesException;
-import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class AuthService {

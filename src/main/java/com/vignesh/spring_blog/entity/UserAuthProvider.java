@@ -1,9 +1,13 @@
 package com.vignesh.spring_blog.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Table(name = "user_auth_provider")
 @Data

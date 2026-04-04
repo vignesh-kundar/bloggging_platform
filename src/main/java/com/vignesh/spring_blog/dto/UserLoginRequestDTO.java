@@ -1,4 +1,3 @@
 package com.vignesh.spring_blog.dto;
 
-public record UserLoginRequestDTO(String email , String password) {
-}
+public record UserLoginRequestDTO(String email , String password) { }
