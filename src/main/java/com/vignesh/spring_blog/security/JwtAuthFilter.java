@@ -45,7 +45,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String email = jwtService.extractEmail(jwtToken);
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            Users user = usersRepository.findByEmail(email).orElseThrow( () -> new NoSuchElementException("No Usesr with email Id found!"));
+            Users user = usersRepository.findByEmail(email).orElseThrow( () -> new NoSuchElementException("No Users with email Id found!"));
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
               user,
               null,

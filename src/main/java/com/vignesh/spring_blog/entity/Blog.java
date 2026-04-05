@@ -42,7 +42,7 @@ public class Blog {
     private List<Tag> tags = new ArrayList<>();
 
     @ManyToOne()
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "users_id" , nullable = false)
     private Users users;
 
     @PrePersist

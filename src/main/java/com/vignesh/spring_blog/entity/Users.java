@@ -2,10 +2,7 @@ package com.vignesh.spring_blog.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.engine.internal.Cascade;
 
 import java.time.LocalDateTime;
@@ -17,6 +14,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "users")
+@ToString(exclude = "authProvider")
 public class Users {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
