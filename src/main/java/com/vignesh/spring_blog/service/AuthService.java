@@ -1,11 +1,15 @@
 package com.vignesh.spring_blog.service;
 
+import com.vignesh.spring_blog.dto.UserResponseDTO;
 import com.vignesh.spring_blog.entity.UserAuthProvider;
 import com.vignesh.spring_blog.entity.Users;
 import com.vignesh.spring_blog.repository.UserAuthProviderRepository;
 import com.vignesh.spring_blog.repository.UsersRepository;
+import com.vignesh.spring_blog.util.ResponseFormatter;
 import jakarta.persistence.EntityExistsException;
+import org.apache.catalina.connector.ResponseFacade;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import javax.naming.directory.InvalidAttributesException;
@@ -71,4 +75,7 @@ public class AuthService {
         return jwtService.generateJwtToken(email);
     }
 
+    public UserResponseDTO getUserProfileFromContext(String jwtToken) {
+        return ResponseFormatter.toUserResponseDTO((Users) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+    }
 }
