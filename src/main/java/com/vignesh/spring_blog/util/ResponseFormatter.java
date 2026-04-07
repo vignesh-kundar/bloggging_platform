@@ -30,7 +30,7 @@ public class ResponseFormatter {
                 blog.getTags().stream().map(Tag::getName).toList(),
                 blog.getCreatedAt(),
                 blog.getUpdatedAt(),
-                blog.getUsers()
+                blog.getUsers().getUserName()
         );
     }
 

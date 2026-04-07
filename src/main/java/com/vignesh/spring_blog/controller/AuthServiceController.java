@@ -1,4 +1,4 @@
-package com.vignesh.spring_blog.controller.v1;
+package com.vignesh.spring_blog.controller;
 
 import com.vignesh.spring_blog.dto.AuthResponseToken;
 import com.vignesh.spring_blog.dto.RegisterUserRequestDTO;
