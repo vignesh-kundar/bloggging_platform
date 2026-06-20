@@ -24,6 +24,7 @@ public class Blog {
     private Long id;
 
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String content;
     private String category;
 
