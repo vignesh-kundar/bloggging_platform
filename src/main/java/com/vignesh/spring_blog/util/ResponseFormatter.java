@@ -2,8 +2,10 @@ package com.vignesh.spring_blog.util;
 
 import com.vignesh.spring_blog.dto.BlogResponseDTO;
 import com.vignesh.spring_blog.dto.BlogResponseDTOV2;
+import com.vignesh.spring_blog.dto.UserResponseDTO;
 import com.vignesh.spring_blog.entity.Blog;
 import com.vignesh.spring_blog.entity.Tag;
+import com.vignesh.spring_blog.entity.Users;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -31,6 +33,15 @@ public class ResponseFormatter {
                 blog.getCreatedAt(),
                 blog.getUpdatedAt(),
                 blog.getUsers().getUserName()
+        );
+    }
+
+    public static UserResponseDTO toUserResponseDTO(Users user) {
+        return new UserResponseDTO(
+                user.getEmail(),
+                user.getUserName(),
+                user.getAvatarUrl(),
+                user.getName()
         );
     }
 

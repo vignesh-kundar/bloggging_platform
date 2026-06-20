@@ -3,16 +3,17 @@ package com.vignesh.spring_blog.controller;
 import com.vignesh.spring_blog.dto.AuthResponseToken;
 import com.vignesh.spring_blog.dto.RegisterUserRequestDTO;
 import com.vignesh.spring_blog.dto.UserLoginRequestDTO;
+import com.vignesh.spring_blog.dto.UserResponseDTO;
+import com.vignesh.spring_blog.entity.Users;
 import com.vignesh.spring_blog.service.AuthService;
+import com.vignesh.spring_blog.util.ResponseFormatter;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -32,6 +33,12 @@ public class AuthServiceController {
     public ResponseEntity<AuthResponseToken> loginUser(@Valid @RequestBody UserLoginRequestDTO userLoginRequest) throws Exception {
             String token = authService.loginUser(userLoginRequest.email(), userLoginRequest.password());
             return new ResponseEntity<>(new AuthResponseToken(token , "Successfully logged-in!") , HttpStatus.OK);
+    }
+
+    @GetMapping("/userprofile")
+    public ResponseEntity<UserResponseDTO> getUserProfile(@RequestHeader("Authorization") String jwtToken) {
+        UserResponseDTO response = authService.getUserProfileFromContext(jwtToken);
+        return new ResponseEntity<>(response , HttpStatus.OK);
     }
 
 }
