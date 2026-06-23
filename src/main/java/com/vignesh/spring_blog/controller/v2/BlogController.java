@@ -3,11 +3,13 @@ package com.vignesh.spring_blog.controller.v2;
 import com.vignesh.spring_blog.dto.BlogPostDTO;
 import com.vignesh.spring_blog.dto.BlogResponseDTO;
 import com.vignesh.spring_blog.dto.BlogResponseDTOV2;
+import com.vignesh.spring_blog.dto.BlogResponseDTOV2;
 import com.vignesh.spring_blog.entity.Users;
 import com.vignesh.spring_blog.service.BlogService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,12 +26,16 @@ public class BlogController {
     private BlogService blogService;
 
     @GetMapping("/posts")
-    public ResponseEntity<List<BlogResponseDTOV2>> getAllBlogPosts(@RequestParam(required = false) String term) {
+    public ResponseEntity<Page<BlogResponseDTOV2>> getAllBlogPosts(
+            @RequestParam(required = false) String term,
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize
+    ) {
         if (null!=term && !term.isBlank()) {
             log.info("Request Param received : {}" , term);
-            return new ResponseEntity<>(blogService.filterByTermv2(term) , HttpStatus.OK);
+            return new ResponseEntity<>(blogService.filterByTermv2(term , pageNumber , pageSize) , HttpStatus.OK);
         }
-        return new ResponseEntity<>(blogService.findAllBlogsv2() , HttpStatus.OK);
+        return new ResponseEntity<>(blogService.findAllBlogsv2(pageNumber , pageSize) , HttpStatus.OK);
     }
 
     @PostMapping("/posts")

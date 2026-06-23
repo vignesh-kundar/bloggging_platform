@@ -15,6 +15,7 @@ import java.util.List;
 @RestController(value = "blogControllerv1")
 @RequestMapping("/api/v1")
 @Slf4j
+@Deprecated(since = "June 24 2026")
 public class BlogController {
 
     @Autowired
