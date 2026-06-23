@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="vignesh">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="blog"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="users">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_name" type="VARCHAR(255)"/>
+            <column name="avatar_url" type="VARCHAR(255)"/>
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="user_auth_provider">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_user_auth_provider_user" references="users(id)"/>
+            </column>
+            <column name="provider" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="provider_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="provider_hash" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createTable tableName="blog">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="content" type="VARCHAR(255)"/>
+            <column name="category" type="VARCHAR(255)"/>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="users_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_blog_user" references="users(id)"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="tag">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createTable tableName="blog_tag">
+            <column name="blog_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_blog_tag_blog" references="blog(id)"/>
+            </column>
+            <column name="tag_id" type="BIGINT">
+                <constraints nullable="false" foreignKeyName="fk_blog_tag_tag" references="tag(id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
