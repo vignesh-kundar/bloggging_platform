@@ -1,6 +1,8 @@
 package com.vignesh.spring_blog.repository;
 
 import com.vignesh.spring_blog.entity.Blog;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,6 +15,12 @@ public interface BlogRepository extends JpaRepository<Blog , Long> {
             "b.category LIKE %:term% OR " +
             "b.content LIKE %:term% OR " +
             "b.title LIKE %:term%")
-    List<Blog> findAllByTerm(@Param("term") String term);
+    Page<Blog> findAllByTerm(@Param("term") String term , Pageable page);
+
+    @Query(value = "SELECT b FROM Blog b WHERE " +
+            "b.category LIKE %:term% OR " +
+            "b.content LIKE %:term% OR " +
+            "b.title LIKE %:term%")
+    List<Blog> findAllByTerm( @Param("term") String term);
 
 }

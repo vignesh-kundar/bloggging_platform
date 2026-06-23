@@ -11,6 +11,9 @@ import com.vignesh.spring_blog.repository.TagRepository;
 import com.vignesh.spring_blog.util.ResponseFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,11 +36,12 @@ public class BlogService {
         return blogs.stream().map(ResponseFormatter::toResponse).toList();
     }
 
-    public List<BlogResponseDTOV2> findAllBlogsv2() {
+    public Page<BlogResponseDTOV2> findAllBlogsv2(int pageNumber , int pageSize) {
         log.info("User requested for all Blogs (v2)!");
-        List<Blog> blogs = blogRepository.findAll();
+        Pageable page = PageRequest.of( pageNumber , pageSize );
+        Page<Blog> blogs = blogRepository.findAll(page);
         log.debug("Blog List Fetched : {}" , blogs.stream().toList());
-        return blogs.stream().map(ResponseFormatter::toResponseV2).toList();
+        return blogs.map(ResponseFormatter::toResponseV2);
     }
 
     public BlogResponseDTO addBlog(BlogPostDTO blog) {
@@ -91,10 +95,11 @@ public class BlogService {
         return blogs.stream().map(ResponseFormatter::toResponse).toList();
     }
 
-    public List<BlogResponseDTOV2> filterByTermv2(String termValue) {
+    public Page<BlogResponseDTOV2> filterByTermv2(String termValue , int pageNumber , int pageSize) {
         log.info("filtering by term : {}" , termValue);
-        List<Blog> blogs = blogRepository.findAllByTerm(termValue);
-        List<BlogResponseDTOV2> response = blogs.stream().map(ResponseFormatter::toResponseV2).toList();
+        Pageable page = PageRequest.of(pageNumber , pageSize);
+        Page<Blog> blogs = blogRepository.findAllByTerm(termValue , page);
+        Page<BlogResponseDTOV2> response = blogs.map(ResponseFormatter::toResponseV2);
         return response;
     }
 }
