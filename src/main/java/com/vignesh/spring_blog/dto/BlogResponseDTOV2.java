@@ -6,4 +6,4 @@ import com.vignesh.spring_blog.entity.Users;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record BlogResponseDTOV2 (Long id, String title, String content , String category , List<String> tags , LocalDateTime createdAt , LocalDateTime updatedAt , String author) { }
+public record BlogResponseDTOV2 (Long id, String title, String content , String category , List<String> tags , LocalDateTime createdAt , LocalDateTime updatedAt , String author , String avatarUrl) { }
