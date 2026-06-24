@@ -2,19 +2,19 @@ package com.vignesh.spring_blog.service;
 
 import com.vignesh.spring_blog.dto.BlogPostDTO;
 import com.vignesh.spring_blog.dto.BlogResponseDTO;
+import com.vignesh.spring_blog.dto.BlogResponseDTOV2;
 import com.vignesh.spring_blog.entity.Blog;
 import com.vignesh.spring_blog.entity.Tag;
+import com.vignesh.spring_blog.entity.Users;
 import com.vignesh.spring_blog.repository.BlogRepository;
 import com.vignesh.spring_blog.repository.TagRepository;
 import com.vignesh.spring_blog.util.ResponseFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -33,6 +33,13 @@ public class BlogService {
         return blogs.stream().map(ResponseFormatter::toResponse).toList();
     }
 
+    public List<BlogResponseDTOV2> findAllBlogsv2() {
+        log.info("User requested for all Blogs (v2)!");
+        List<Blog> blogs = blogRepository.findAll();
+        log.debug("Blog List Fetched : {}" , blogs.stream().toList());
+        return blogs.stream().map(ResponseFormatter::toResponseV2).toList();
+    }
+
     public BlogResponseDTO addBlog(BlogPostDTO blog) {
         log.info("New Blog Entry received : {}" , blog.toString());
 
@@ -41,6 +48,23 @@ public class BlogService {
                         .orElseGet(() -> tagRepository.save(Tag.builder().name(tagName).build()))).toList();
 
         Blog newBlog = Blog.builder()
+                .title(blog.title())
+                .category(blog.category())
+                .content(blog.content())
+                .tags(tags).build();
+
+        return ResponseFormatter.toResponse(blogRepository.save(newBlog));
+    }
+
+    public BlogResponseDTO addBlog(BlogPostDTO blog , Users user) {
+        log.info("New Blog Entry received : {}" , blog.toString());
+
+        List<Tag> tags = blog.tags().stream()
+                .map(tagName -> tagRepository.findByName(tagName)
+                        .orElseGet(() -> tagRepository.save(Tag.builder().name(tagName).build()))).toList();
+
+        Blog newBlog = Blog.builder()
+                .users(user)
                 .title(blog.title())
                 .category(blog.category())
                 .content(blog.content())
@@ -65,5 +89,12 @@ public class BlogService {
         log.info("filtering by term : {}" , termValue);
         List<Blog> blogs = blogRepository.findAllByTerm(termValue);
         return blogs.stream().map(ResponseFormatter::toResponse).toList();
+    }
+
+    public List<BlogResponseDTOV2> filterByTermv2(String termValue) {
+        log.info("filtering by term : {}" , termValue);
+        List<Blog> blogs = blogRepository.findAllByTerm(termValue);
+        List<BlogResponseDTOV2> response = blogs.stream().map(ResponseFormatter::toResponseV2).toList();
+        return response;
     }
 }

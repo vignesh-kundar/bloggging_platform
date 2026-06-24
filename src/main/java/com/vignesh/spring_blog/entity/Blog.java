@@ -1,6 +1,7 @@
 package com.vignesh.spring_blog.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class Blog {
     private Long id;
 
     private String title;
+    @Column(columnDefinition = "TEXT")
     private String content;
     private String category;
 
@@ -39,6 +41,10 @@ public class Blog {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<Tag> tags = new ArrayList<>();
+
+    @ManyToOne()
+    @JoinColumn(name = "users_id" , nullable = false)
+    private Users users;
 
     @PrePersist
     protected void onCreate() {
