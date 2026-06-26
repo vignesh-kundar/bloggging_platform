@@ -11,6 +11,7 @@ import com.vignesh.spring_blog.repository.TagRepository;
 import com.vignesh.spring_blog.util.ResponseFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +37,7 @@ public class BlogService {
         return blogs.stream().map(ResponseFormatter::toResponse).toList();
     }
 
+    @Cacheable("blogCache")
     public Page<BlogResponseDTOV2> findAllBlogsv2(int pageNumber , int pageSize) {
         log.info("User requested for all Blogs (v2)!");
         Pageable page = PageRequest.of( pageNumber , pageSize );
@@ -95,6 +97,7 @@ public class BlogService {
         return blogs.stream().map(ResponseFormatter::toResponse).toList();
     }
 
+    @Cacheable("blogCache")
     public Page<BlogResponseDTOV2> filterByTermv2(String termValue , int pageNumber , int pageSize) {
         log.info("filtering by term : {}" , termValue);
         Pageable page = PageRequest.of(pageNumber , pageSize);
