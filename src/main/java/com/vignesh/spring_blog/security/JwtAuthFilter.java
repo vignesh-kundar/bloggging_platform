@@ -3,6 +3,7 @@ package com.vignesh.spring_blog.security;
 import com.vignesh.spring_blog.entity.Users;
 import com.vignesh.spring_blog.repository.UsersRepository;
 import com.vignesh.spring_blog.service.JwtService;
+import com.vignesh.spring_blog.service.UserCacheService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,11 +22,13 @@ import java.util.NoSuchElementException;
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    @Autowired
     private JwtService jwtService;
+    private UserCacheService userCacheService;
 
-    @Autowired
-    private UsersRepository usersRepository;
+    JwtAuthFilter(JwtService jwtService , UserCacheService userCacheService) {
+        this.jwtService = jwtService;
+        this.userCacheService = userCacheService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request , HttpServletResponse response , FilterChain filterChain) throws ServletException, IOException {
@@ -45,7 +48,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String email = jwtService.extractEmail(jwtToken);
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            Users user = usersRepository.findByEmail(email).orElseThrow( () -> new NoSuchElementException("No Users with email Id found!"));
+            Users user = userCacheService.findUserByEmail(email);
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
               user,
               null,
