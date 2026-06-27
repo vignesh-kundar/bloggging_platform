@@ -11,10 +11,12 @@ import com.vignesh.spring_blog.repository.TagRepository;
 import com.vignesh.spring_blog.util.ResponseFormatter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,7 +42,7 @@ public class BlogService {
     @Cacheable("blogCache")
     public Page<BlogResponseDTOV2> findAllBlogsv2(int pageNumber , int pageSize) {
         log.info("User requested for all Blogs (v2)!");
-        Pageable page = PageRequest.of( pageNumber , pageSize );
+        Pageable page = PageRequest.of( pageNumber , pageSize , Sort.by("updatedAt").descending());
         Page<Blog> blogs = blogRepository.findAll(page);
         log.debug("Blog List Fetched : {}" , blogs.stream().toList());
         return blogs.map(ResponseFormatter::toResponseV2);
@@ -62,6 +64,7 @@ public class BlogService {
         return ResponseFormatter.toResponse(blogRepository.save(newBlog));
     }
 
+    @CacheEvict(value = "blogCache" , allEntries = true)
     public BlogResponseDTO addBlog(BlogPostDTO blog , Users user) {
         log.info("New Blog Entry received : {}" , blog.toString());
 
@@ -100,7 +103,7 @@ public class BlogService {
     @Cacheable("blogCache")
     public Page<BlogResponseDTOV2> filterByTermv2(String termValue , int pageNumber , int pageSize) {
         log.info("filtering by term : {}" , termValue);
-        Pageable page = PageRequest.of(pageNumber , pageSize);
+        Pageable page = PageRequest.of(pageNumber , pageSize , Sort.by("updatedAt").descending());
         Page<Blog> blogs = blogRepository.findAllByTerm(termValue , page);
         Page<BlogResponseDTOV2> response = blogs.map(ResponseFormatter::toResponseV2);
         return response;
