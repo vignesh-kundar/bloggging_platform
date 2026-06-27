@@ -6,6 +6,7 @@ import com.vignesh.spring_blog.service.BlogService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,6 @@ import java.util.List;
 @RestController(value = "blogControllerv1")
 @RequestMapping("/api/v1")
 @Slf4j
-@Deprecated(since = "June 24 2026")
 public class BlogController {
 
     @Autowired
@@ -29,6 +29,7 @@ public class BlogController {
         }
         return new ResponseEntity<>(blogService.findAllBlogs() , HttpStatus.OK);
     }
+
 
     @GetMapping("/posts/{post_id}")
     public ResponseEntity<BlogResponseDTO> getBlogPostById(@PathVariable Long post_id) {
